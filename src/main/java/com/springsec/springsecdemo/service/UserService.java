@@ -18,11 +18,4 @@ public class UserService {
         return repo.save(user);
     }
 
-//    public boolean authenticate(User user) {
-//        User existingUser = repo.findByUsername(user.getUsername());
-//        if (existingUser != null) {
-//            return encoder.matches(user.getPassword(), existingUser.getPassword());
-//        }
-//        return false;
-//    }
 }
