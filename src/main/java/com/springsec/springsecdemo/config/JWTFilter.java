@@ -39,12 +39,12 @@ public class JWTFilter extends OncePerRequestFilter {
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             token = authHeader.substring(7); // Extract the token from the header
             // Here you would typically decode the token and extract the username
-            username = jwtService.extractUsername(token); // Method to extract username from the token
+            username = jwtService.extractUserName(token); // Method to extract username from the token
         }
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = context.getBean(UserDetailsService.class).loadUserByUsername(username);
-            if (jwtService.validateToken(token, username)) {
+            if (jwtService.validateToken(token, userDetails)) {
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities());
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
