@@ -3,9 +3,11 @@ package com.springsec.springsecdemo.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -37,8 +39,10 @@ public class SecurityConfig {
 //         Configure security settings
 
         http.csrf(csrf -> csrf.disable()) // Disable CSRF protection for simplicity
-                .authorizeHttpRequests(auth -> auth.anyRequest().authenticated()) // Require authentication for all requests
-                .httpBasic(Customizer.withDefaults()) // Use HTTP Basic authentication
+                .authorizeHttpRequests(request -> request
+                        .requestMatchers("register", "login")
+                        .permitAll() // Allow public access to the registration endpoint)
+                        .anyRequest().authenticated()) // All other requests require authentication
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)); // Use stateless sessions
         // Note: In a real application, you would want to enable CSRF protection and configure it properly.
 
@@ -64,4 +68,9 @@ public class SecurityConfig {
 //
 //        return new InMemoryUserDetailsManager(admin, user);
 //    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
+    }
 }
