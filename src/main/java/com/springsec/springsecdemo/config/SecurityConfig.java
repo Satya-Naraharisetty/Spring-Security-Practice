@@ -16,6 +16,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 //import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 //import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -23,6 +24,9 @@ public class SecurityConfig {
 
     @Autowired
     private UserDetailsService userDetailsService;
+
+    @Autowired
+    private JWTFilter jwtFilter; // Assuming you have a JWTAuthenticationFilter defined
 
     @Bean
     public AuthenticationProvider authProvider() {
@@ -40,10 +44,11 @@ public class SecurityConfig {
 
         http.csrf(csrf -> csrf.disable()) // Disable CSRF protection for simplicity
                 .authorizeHttpRequests(request -> request
-                        .requestMatchers("register", "login")
+                        .requestMatchers("register", "login") // Match the registration and login endpoints
                         .permitAll() // Allow public access to the registration endpoint)
                         .anyRequest().authenticated()) // All other requests require authentication
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)); // Use stateless sessions
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Use stateless sessions
+                .addFilterBefore("jwtFilter", UsernamePasswordAuthenticationFilter.class); // Add JWT authentication filter
         // Note: In a real application, you would want to enable CSRF protection and configure it properly.
 
         return http.build();
