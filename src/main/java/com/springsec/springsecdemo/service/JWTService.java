@@ -52,4 +52,12 @@ public class JWTService {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey); // Replace with your base64 encoded secret key
         return Keys.hmacShaKeyFor(keyBytes); // Generate a secure key
     }
+
+    public String extractUsername(String token) {
+        return "";
+    }
+
+    public boolean validateToken(String token, String username) {
+        return true; // Implement token validation logic here
+    }
 }

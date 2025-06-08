@@ -48,7 +48,7 @@ public class SecurityConfig {
                         .permitAll() // Allow public access to the registration endpoint)
                         .anyRequest().authenticated()) // All other requests require authentication
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Use stateless sessions
-                .addFilterBefore("jwtFilter", UsernamePasswordAuthenticationFilter.class); // Add JWT authentication filter
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class); // Add JWT authentication filter
         // Note: In a real application, you would want to enable CSRF protection and configure it properly.
 
         return http.build();
